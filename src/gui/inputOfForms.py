@@ -21,6 +21,7 @@ from userProfileModel.model.aggrFnc.aggrFnc import AggrFnc
 from userProfileModel.userProfileModelStructured import UserProfileModelStructured
 
 import random
+import os
 
 
 class InputSimpleShow:
@@ -100,11 +101,12 @@ class InputThreshold:
 
 class InputND:
    #fileNameItems:String
-   fileNameItems = "../datasets/itemsMy.csv"
+
+   fileNameItems = ".." + os.sep + "datasets" + os.sep + "itemsMy.csv"
    #fileNameRatings:String
-   fileNameRatings = "../datasets/ratingsMy.csv"
+   fileNameRatings = ".." + os.sep + "datasets" + os.sep + "ratingsMy.csv"
    #fileNameUsers:String
-   fileNameUsers = "../datasets/usersMy.csv"
+   fileNameUsers = ".." + os.sep + "datasets" + os.sep + "usersMy.csv"
 
    def read(self):
       return Reader.read(self.fileNameItems, self.fileNameRatings, self.fileNameUsers)     

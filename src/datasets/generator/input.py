@@ -7,7 +7,7 @@ from userProfileModel.model.prefFnc.prefFncRestriction import PrefFncRestriction
 from userProfileModel.model.prefFnc.model.prefFncTriangularModel import PrefFncTriangularModel #class
 from userProfileModel.model.prefFnc.model.prefFncRefractedModel import PrefFncRefractedModel #class
 from userProfileModel.model.prefFnc.model.prefFncCategoricalModel import PrefFncCategoricalModel #class
-
+import os
 
 class InputOfGenerator:
 
@@ -26,9 +26,9 @@ class InputOfGenerator:
      MAX_NUMBER_OF_ITEMS_FOR_USER = 50
 
      # fileNameUsers:str
-     fileNameUsers = "../datasets/usersMy.csv"
-     fileNameItems = "../datasets/itemsMy.csv"
-     fileNameRatings = "../datasets/ratingsMy.csv"
+     fileNameUsers = ".." + os.sep + "datasets" + os.sep + "usersMy.csv"
+     fileNameItems = ".." + os.sep + "datasets" + os.sep + "itemsMy.csv"
+     fileNameRatings = ".." + os.sep + "datasets" + os.sep + "ratingsMy.csv"
 
      # restr1:APrefFncModel
      restr1 = PrefFncRestriction(PrefFncTriangularModel, "generate", None)

@@ -8,6 +8,8 @@ from datasets.datasets import Rating #class
 from datasets.datasets import readRatings #function
 from datasets.datasets import writeRatings #function
 
+import os
+
 
 def convertRefractedModelToTrianularModel():
 
@@ -19,7 +21,7 @@ def convertRefractedModelToTrianularModel():
     #print("usersAll: ", len(usersAll))
 
     # fileNameRatings:String
-    fileNameRatings = "../datasets/ratingsRefractedModel.csv"
+    fileNameRatings = ".." + os.sep + "datasets" + os.sep + "ratingsRefractedModel.csv"
     # ratingsAll:Rating[]
     ratingsAll = readRatings(fileNameRatings);
     #print("ratingsAll: ", len(ratingsAll))
@@ -76,7 +78,7 @@ def convertRefractedModelToTrianularModel():
 
           ratingsNew.append(ratingI)
     
-    fileNameRatings2 = "../datasets/ratingsRectangledModel.csv"
+    fileNameRatings2 = ".." + os.sep + "datasets" + os.sep + "ratingsRectangledModel.csv"
     writeRatings(ratingsNew, fileNameRatings2)
 
     # test reading computed dataset
