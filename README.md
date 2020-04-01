@@ -7,6 +7,8 @@ The main use of this program is for testing statistic and ML methods for learnin
 
 requires Python 3.7
 
+pip install sklearn pandas shapely PyQt5
+
 ```sh
 $ git clone https://github.com/sbalcar/linPrefMod.git
 $ cd linPrefMod
