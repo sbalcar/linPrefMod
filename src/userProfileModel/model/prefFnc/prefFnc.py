@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from typing import List
+
 from generator import *
 from collections import OrderedDict
 
@@ -9,13 +11,13 @@ from geometry.lineSegments import LineSegments #class
 
 class PrefFnc:
   # lineSegments:LineSegments
-  def __init__(self, lineSegments):
+  def __init__(self, lineSegments:LineSegments):
      if type(lineSegments) is not LineSegments:
         raise ValueError("Argument lineSegments isn't type LineSegments.")
      self.lineSegments = lineSegments
 
   # lineSegments:LineSegment[]
-  def constructor(self, lineSegments):
+  def constructor(self, lineSegments:List[LineSegment]):
     self.lineSegments = LineSegments(lineSegments);
 
   def toString(self):
@@ -40,7 +42,7 @@ class PrefFnc:
     return Pair(pointsX, pointsY)
 
   # pointX:float
-  def functionalValue(self, pointX):
+  def functionalValue(self, pointX:float):
     # intersections:float[]
     intersections = self.lineSegments.intersectionsWithTheAxisParallelToY(pointX);
     # intersectionsValid:float[]
@@ -51,7 +53,7 @@ class PrefFnc:
     return intersectionsValid[0];
 
   # functionalValue:float
-  def inverseValue(self, functionalValue):
+  def inverseValue(self, functionalValue:float):
     # intersections:float[]
     intersections = self.lineSegments.intersectionsWithTheAxisParallelToX(functionalValue);
     # intersections:float[]

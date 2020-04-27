@@ -14,6 +14,8 @@ from geometry.pointWithID import PointWithID #class
 from methods.randomSearch import RandomSearch #class
 from methods.hillClimbing import HillClimbing #class
 from methods.theHighestRating import TheHighestRating #class
+from methods.linearRegression import LinearRegression #class
+
 from methods.operators.evaluation.fitnessRMSE import fitnessRMSE #function
 from methods.operators.operatorGenerateTriangularModel import operatorGenerateTriangularModel #function
 from methods.operators.operatorGenerateRefractedModel import operatorGenerateRefractedModel #function
@@ -44,11 +46,11 @@ class MethodsModel:
     def getModel():
 
         # argumentsRandomTriagular:Arguments
-        argumentsRandomTriagular = Arguments([Argument(RandomSearch.NUMBER_OF_RUN, 30),
+        argumentsRandomTriagular:Arguments = Arguments([Argument(RandomSearch.NUMBER_OF_RUN, 30),
                                               Argument(RandomSearch.GENERATE_OPR, operatorGenerateTriangularModel.__name__),
                                               Argument(RandomSearch.FITNESS_FNC, fitnessRMSE.__name__)])
         # methodRandomTriagular:MethodModel
-        methodRandomTriagular = MethodModel("Random Triangular", RandomSearch, TrainIsTestDataSplitModel, argumentsRandomTriagular)
+        methodRandomTriagular:MethodModel = MethodModel("Random Triangular", RandomSearch, TrainIsTestDataSplitModel, argumentsRandomTriagular)
 
 
         # argumentsRandomRefracted:Arguments
@@ -56,19 +58,19 @@ class MethodsModel:
                                               Argument(RandomSearch.GENERATE_OPR, operatorGenerateRefractedModel.__name__),
                                               Argument(RandomSearch.FITNESS_FNC, fitnessRMSE.__name__)])
         # methodRandomRefracted:MethodModel
-        methodRandomRefracted = MethodModel("Random Refracted", RandomSearch, Train5Test1DataSplitModel, argumentsRandomRefracted)
+        methodRandomRefracted:MethodModel = MethodModel("Random Refracted", RandomSearch, Train5Test1DataSplitModel, argumentsRandomRefracted)
 
 
         # argumentsTheHighestRating:Arguments
-        argumentsTheHighestRating = Arguments([Argument(RandomSearch.FITNESS_FNC, fitnessRMSE.__name__),
+        argumentsTheHighestRating:Arguments = Arguments([Argument(RandomSearch.FITNESS_FNC, fitnessRMSE.__name__),
                                                Argument(RandomSearch.AGGR_OPR, AggrOperatorTwoFurthest05Points.__name__)])
 
         # methodRandomRefracted:MethodModel
-        methodTheHighestRating = MethodModel("The Highest Rating", TheHighestRating, CrossValidationDataSplitModel, argumentsTheHighestRating)
+        methodTheHighestRating:MethodModel = MethodModel("The Highest Rating", TheHighestRating, CrossValidationDataSplitModel, argumentsTheHighestRating)
 
 
         # argumentsHillClimbing:Arguments
-        argumentsHillClimbing = Arguments([Argument(HillClimbing.NUMBER_OF_RUN, 30),
+        argumentsHillClimbing:Arguments = Arguments([Argument(HillClimbing.NUMBER_OF_RUN, 30),
                                            Argument(HillClimbing.NUMBER_OF_NEIGHBOURS, 10),
                                            Argument(HillClimbing.FITNESS_FNC, fitnessRMSE.__name__),
                                            Argument(HillClimbing.GENERATE_OPR, operatorGenerateTriangularModel.__name__),
@@ -76,14 +78,21 @@ class MethodsModel:
                                            Argument(HillClimbing.AGGR_OPR, AggrOperatorTwoFurthest05Points.__name__)])
 
         # methodRandomRefracted:MethodModel
-        methodHillClimbing = MethodModel("HillClimbing", HillClimbing, TrainIsTestDataSplitModel, argumentsHillClimbing)
+        methodHillClimbing:MethodModel = MethodModel("HillClimbing", HillClimbing, TrainIsTestDataSplitModel, argumentsHillClimbing)
 
+
+        # argumentsLineaRegression:Arguments
+        argumentsLineaRegression:Arguments = Arguments([Argument(LinearRegression.FITNESS_FNC, fitnessRMSE.__name__)])
+
+        # methodRandomRefracted:MethodModel
+        methodLineaRegression:MethodModel = MethodModel("LineaRegression", LinearRegression, Train5Test1DataSplitModel, argumentsLineaRegression)
 
         methodsModel = MethodsModel()
         methodsModel.addModel(methodRandomTriagular)
         methodsModel.addModel(methodRandomRefracted)
         methodsModel.addModel(methodTheHighestRating)
         methodsModel.addModel(methodHillClimbing)
+        methodsModel.addModel(methodLineaRegression)
 
 
         return methodsModel

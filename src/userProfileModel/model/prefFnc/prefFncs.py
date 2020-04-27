@@ -19,6 +19,11 @@ class PrefFncX:
 
   # lineSegments:LineSegment[]
   def createFromLineSegments(lineSegments):
+      if type(lineSegments) is not list:
+          raise ValueError("Argument lineSegments isn't type list.")
+      for lineSegmentI in lineSegments:
+          if type(lineSegmentI) is not LineSegment:
+              raise ValueError("Argument lineSegmentI don't contain LineSegment.")
       p = PrefFncX([])
       p.lineSegments = LineSegments(lineSegments)
       return p
@@ -94,6 +99,11 @@ class PrefFncY:
 
   # lineSegments:LineSegment[]
   def createFromLineSegments(lineSegments):
+      if type(lineSegments) is not list:
+          raise ValueError("Argument lineSegments isn't type list.")
+      for lineSegmentI in lineSegments:
+          if type(lineSegmentI) is not LineSegment:
+              raise ValueError("Argument lineSegmentI don't contain LineSegment.")
       p = PrefFncY([])
       p.lineSegments = LineSegments(lineSegments)
       return p

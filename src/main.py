@@ -11,10 +11,13 @@ from jobs.convertDataset import convertDataset #function
 from jobs.paintPreferenceCube import paintPreferenceCube #function
 
 from jobs.gui import gui #function
-#from graphicModel.linPrefModel.graphicalModel import main4 # function
+
 from jobs.cv03 import cv03 #function
 
 from datasets.generator.generator import generate #function
+
+
+
 
 if __name__== "__main__":
   #paintData()
@@ -26,8 +29,9 @@ if __name__== "__main__":
   #convertDataset();
   #paintPreferenceCube()
   gui();
-  #main4();
 
   #cv03()
   #generate()
 
+  #test()
+  #runDemo()

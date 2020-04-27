@@ -33,6 +33,11 @@ class LineSegments:
   # points:list<Point>
   @staticmethod
   def createPointToPoint(points):
+    if type(points) is not list:
+       raise ValueError("Argument points isn't type list.")
+    for pointI in points:
+        if type(pointI) is not Point:
+            raise ValueError("Argument pointI don't contain Point.")
     # List<LineSegment>
     lineSegments = [LineSegment(points[i], points[i+1]) for i in range(0, len(points)-1)]
     return LineSegments(lineSegments);

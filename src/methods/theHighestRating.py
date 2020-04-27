@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from typing import List
+
 from methods.aMethod import AMethod #class
 
 from methods.individual.individualEvaluated import IndividualEvaluated #class
@@ -9,7 +11,6 @@ from methods.operators.evaluation.fitness_old import fitnessRMSE_ #function
 from methods.operators.operatorGenerateTriangularModel import operatorGenerateTriangularModel #function
 from methods.operators.operatorRandomMoveTriangularModel import operatorRandomMoveTriangularModel #function
 from methods.individual.individualUserTrinity import IndividualUserTrinity #class
-
 
 from userProfileModel.model.prefFnc.model.prefFncTriangularModel import PrefFncTriangularModel
 from userProfileModel.model.aggrFnc.aggrFnc import AggrFnc
@@ -22,15 +23,22 @@ from geometry.point import Point
 
 from methods.operators.aggregation.aggrOperatorTwoFurthest05Points import AggrOperatorTwoFurthest05Points
 
+from geometry.pointWithRating import PointWithRating #class
+
+from configuration.linPrefModelConfiguration import LinPrefModelConfiguration #class
+
+from configuration.argument import Argument
+from configuration.arguments import Arguments
+
 class TheHighestRating(AMethod):
 
     # pointsWithRatingTrain:list<PointWithRating>, argument:Arguments, linPrefModelConf:LinPrefModelConfiguration
-    def search(self, pointsWithRatingTrain, arguments, linPrefModelConf):
+    def search(self, pointsWithRatingTrain:List[PointWithRating], arguments:Arguments, linPrefModelConf:LinPrefModelConfiguration):
 
         # argFitnessFnc:Argument
-        argFitnessFnc = arguments.exportArgument(self.FITNESS_FNC)
+        argFitnessFnc:Argument = arguments.exportArgument(self.FITNESS_FNC)
         # argAgregationClass:Argument
-        argAgregationClass = arguments.exportArgument(self.AGGR_OPR)
+        argAgregationClass:Argument = arguments.exportArgument(self.AGGR_OPR)
 
         # fitnessFnc:Function
         fitnessFnc = argFitnessFnc.exportValueAsFnc()

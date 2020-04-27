@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from typing import List
+
 from methods.aMethod import AMethod #class
 
 from methods.individual.individualEvaluated import IndividualEvaluated #class
@@ -8,6 +10,12 @@ from methods.operators.evaluation.fitnessRMSE import fitnessRMSE #function
 from methods.operators.operatorGenerateTriangularModel import operatorGenerateTriangularModel #function
 from methods.operators.operatorRandomMoveTriangularModel import operatorRandomMoveTriangularModel #function
 
+from geometry.pointWithRating import PointWithRating #class
+
+from configuration.linPrefModelConfiguration import LinPrefModelConfiguration #class
+
+from configuration.argument import Argument
+from configuration.arguments import Arguments
 
 class HillClimbing(AMethod):
 
@@ -15,26 +23,26 @@ class HillClimbing(AMethod):
     NUMBER_OF_NEIGHBOURS = "numberOfNeighbours"
     NEIGHBOUR_OPR = "neighbourOpr"
 
-    # pointsWithRatingTrain:list<PointWithRating>, argument:Arguments, modelConf:LinPrefModelConfiguration
-    def search(self, pointsWithRatingTrain, arguments, linPrefModelConf):
+    # pointsWithRatingTrain:list<PointWithRating>, argument:Arguments, linPrefModelConf:LinPrefModelConfiguration
+    def search(self, pointsWithRatingTrain:List[PointWithRating], arguments:Arguments, linPrefModelConf:LinPrefModelConfiguration):
         # argNumberOfRun:Argument
-        argNumberOfRun = arguments.exportArgument(self.NUMBER_OF_RUN)
-        numberOfGenerations = argNumberOfRun.exportValueAsInt()
+        argNumberOfRun:Argument = arguments.exportArgument(self.NUMBER_OF_RUN)
+        numberOfGenerations:int = argNumberOfRun.exportValueAsInt()
 
         # argNumberOfRun:Argument
-        argNumberOfNeighbours = arguments.exportArgument(self.NUMBER_OF_NEIGHBOURS)
-        numberOfNeighbours = argNumberOfNeighbours.exportValueAsInt()
+        argNumberOfNeighbours:Argument = arguments.exportArgument(self.NUMBER_OF_NEIGHBOURS)
+        numberOfNeighbours:int = argNumberOfNeighbours.exportValueAsInt()
 
         # argFitnessFnc:Argument
-        argFitnessFnc = arguments.exportArgument(self.FITNESS_FNC)
+        argFitnessFnc:Argument = arguments.exportArgument(self.FITNESS_FNC)
         fitnessFnc = argFitnessFnc.exportValueAsFnc()
 
         # argGenerateFnc:Argument
-        argGenerateFnc = arguments.exportArgument(self.GENERATE_OPR)
+        argGenerateFnc:Argument = arguments.exportArgument(self.GENERATE_OPR)
         generateFnc = argGenerateFnc.exportValueAsFnc()
 
         # argNeighbourOpr:Argument
-        argNeighbourOpr = arguments.exportArgument(self.NEIGHBOUR_OPR)
+        argNeighbourOpr:Argument = arguments.exportArgument(self.NEIGHBOUR_OPR)
         neighbourOpr = argNeighbourOpr.exportValueAsFnc()
 
         return self.__search(pointsWithRatingTrain, linPrefModelConf, numberOfGenerations=numberOfGenerations,
