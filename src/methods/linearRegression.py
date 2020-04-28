@@ -103,30 +103,44 @@ class LinearRegression(AMethod):
         # fitnessFnc:Function
         fitnessFnc = argFitnessFnc.exportValueAsFnc()
 
+        nDims:int = 2
+
         configs:List[List[int]] = [[7, 4, 0], [7, 7, 1]]
         (preferenceFunctionsCoefs, agregationFunctionCoefs) = self.__trainModel(pointsWithRatingTrain, configs)
 
         N:int = 100
         rangeN:List[float] = [i / N for i in list(range(0, N))]
 
-        prefFncsPoints:List[List[Point]] = []
-        for (preferenceFunctionCoefsI, configI) in zip(preferenceFunctionsCoefs, configs):
-            (interceptI, noveKoeficienty) = preferenceFunctionCoefsI
-            y:List[float] = interceptI + np.dot(noveKoeficienty, np.array(getRegressors(*configI, rangeN)))
+        lineSegmentsDim:List[LineSegments] = []
+        for dimI in range(nDims):
+            (interceptI, coeficientsNewI) = preferenceFunctionsCoefs[dimI]
+            configI:List[int] = configs[dimI]
 
-            pointsI:List[Point] = [Point(float(pI[0]), float(pI[1])) for pI in list(zip(rangeN, y))]
-            prefFncsPoints.append(pointsI)
+            y:List[float] = interceptI + np.dot(coeficientsNewI, np.array(getRegressors(*configI, rangeN)))
+            pointsI:List[Point] = [Point(float(xI), float(yI)) for (xI,yI) in list(zip(rangeN, y))]
 
+            lineSegmentsDimI:LineSegments = LineSegments.createPointToPoint(pointsI).clone()
+            lineSegmentsDim.append(lineSegmentsDimI)
 
-        lineSegmentsX:LineSegments = LineSegments.createPointToPoint(prefFncsPoints[0]).clone()
-        lineSegmentsY:LineSegments = LineSegments.createPointToPoint([Point(pI.y, pI.x) for pI in prefFncsPoints[1]]).clone()
+        lineSegmentsX:LineSegments = lineSegmentsDim[0]
+        lineSegmentsY:LineSegments = LineSegments(
+            [LineSegment(Point(lsI.point1.y, lsI.point1.x), Point(lsI.point2.y, lsI.point2.x)) for lsI in lineSegmentsDim[1].lineSegments])
 
         prefFncX:PrefFncX = PrefFncX.createFromLineSegments(lineSegmentsX.lineSegments)
         prefFncX.transform(linPrefModelConf)
         prefFncY:PrefFncY = PrefFncY.createFromLineSegments(lineSegmentsY.lineSegments)
         prefFncY.transform(linPrefModelConf)
 
-        aggrFnc:AggrFnc = AggrFnc([0.5, 0.5])
+
+        wx:float = agregationFunctionCoefs[1][0]
+        wy:float = agregationFunctionCoefs[1][1]
+        wxNorm:float = float(wx / (wx + wy))
+        wyNorm:float = float(wy / (wx + wy))
+
+        #print("wx: " + str(wxNorm))
+        #print("wy: " + str(wyNorm))
+
+        aggrFnc:AggrFnc = AggrFnc([wyNorm, wxNorm])
 
         upModel:UserProfileModel = UserProfileModel(prefFncX, prefFncY, aggrFnc)
         individual = IndividualUserProfileModel(upModel)
@@ -157,37 +171,36 @@ class LinearRegression(AMethod):
 
         nDims:int = 2
         features:List[List[float]] = [xs, ys]
-        target:List[float] = ratings
 
         regressors = []
         regressorsPerDim = []
-        nSplits:int = 7
-        for dim in range(nDims):
-            regressorsForDimI = getRegressors(*configs[dim], features[dim])
+        dimI:int
+        for dimI in range(nDims):
+            regressorsForDimI:List[List[int]] = getRegressors(*configs[dimI], features[dimI])
             regressors = regressors + regressorsForDimI
             regressorsPerDim.append(regressorsForDimI)
 
-        x = np.array(transpose(regressors))
-        model = sklearn.linear_model.LinearRegression().fit(x, target)
+        x:np.array = np.array(transpose(regressors))
+        model:LinearRegression = sklearn.linear_model.LinearRegression().fit(x, ratings)
 
         start = 0
         predictions = []
         preferenceFunctionsCoefs = []
-        for dim in range(nDims):
-            end = start + len(regressorsPerDim[dim])
-            A = model.coef_[start:end]
-            B = np.array(regressorsPerDim[dim])
+        for dimI in range(nDims):
+            end = start + len(regressorsPerDim[dimI])
+            A:np.array = model.coef_[start:end]
+            B:np.array = np.array(regressorsPerDim[dimI])
             start = end
-            C = np.dot(A,B)
-            C = C.reshape(-1,1)
-            m = sklearn.linear_model.LinearRegression().fit(C,target)
-            predictions.append(m.predict(C))
-            noveKoeficienty = m.coef_*A
-            preferenceFunctionsCoefs.append((m.intercept_,noveKoeficienty))
-            #plt.plot(y); plt.show()
+            C:np.array = np.dot(A, B)
+            C:np.array = C.reshape(-1,1)
+            modelI:LinearRegression = sklearn.linear_model.LinearRegression().fit(C, ratings)
+            predictions.append(modelI.predict(C))
+            coeficientsNewI:np.ndarray = modelI.coef_*A
 
-        X = np.transpose(np.array(predictions))
-        combinationModel = sklearn.linear_model.LinearRegression().fit(X, target)
+            preferenceFunctionsCoefs.append((modelI.intercept_, coeficientsNewI))
 
-        agregationFunctionCoefs = (combinationModel.intercept_,combinationModel.coef_)
-        return (preferenceFunctionsCoefs,agregationFunctionCoefs)
+        X:np.array = np.transpose(np.array(predictions))
+        combinationModel:LinearRegression = sklearn.linear_model.LinearRegression().fit(X, ratings)
+
+        agregationFunctionCoefs = (combinationModel.intercept_, combinationModel.coef_)
+        return (preferenceFunctionsCoefs, agregationFunctionCoefs)
