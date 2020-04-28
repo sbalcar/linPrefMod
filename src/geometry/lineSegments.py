@@ -1,5 +1,7 @@
 0#!/usr/bin/python3
 
+from typing import List
+
 from generator import *
 
 from geometry.lineSegment import LineSegment #class
@@ -85,7 +87,23 @@ class LineSegments:
           points.append(lineSegmentI.point1)
           points.append(lineSegmentI.point2)
       #points:Point[]
-      return points;
+      return points
+
+  def exportMaxX(self):
+      xs:List[float] = [pI.x for pI in self.exportPoints()]
+      return max(xs)
+
+  def exportMinX(self):
+      xs:List[float] = [pI.x for pI in self.exportPoints()]
+      return min(xs)
+
+  def exportMaxY(self):
+      ys:List[float] = [pI.y for pI in self.exportPoints()]
+      return max(ys)
+
+  def exportMinY(self):
+      ys:List[float] = [pI.y for pI in self.exportPoints()]
+      return min(ys)
 
   # valueX:float
   def lineSegmentsWhichIntersectAxisParallelToY(self, valueX):

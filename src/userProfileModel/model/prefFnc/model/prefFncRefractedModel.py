@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from typing import List
+
 import random
 from generator import *
 
@@ -36,14 +38,14 @@ class PrefFncRefractedModel(APrefFncModel):
      points = [Point(0, 0), Point(self.iCoordinate, 1), Point(linPrefModelConf.SIZE_X_DATA_CUBE, 0)]
 
      # lineSegments:LineSegments
-     lineSegments = LineSegments([LineSegment(points[i], points[i+1]) for i in range(0, len(points)-1)])
+     lineSegments = LineSegments([LineSegment(points[i].clone(), points[i+1].clone()) for i in range(0, len(points)-1)])
 
      # +30 in domain of a function -> +10 in range
      # +50 in domain of a function -> +80 in range
      # +20 in domain of a function -> +10 in range
      segmentation = [Pair(30, 10), Pair(50, 80), Pair(20, 10)]
      # refractedPrefFnc:LineSegment[]
-     refractedPrefFnc = []
+     refractedPrefFnc:List[LineSegment] = []
      for lineSegmI in lineSegments.lineSegments:
         # s:LineSegment[]
         s = []

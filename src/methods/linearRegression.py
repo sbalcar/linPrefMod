@@ -111,27 +111,21 @@ class LinearRegression(AMethod):
 
         prefFncsPoints:List[List[Point]] = []
         for (preferenceFunctionCoefsI, configI) in zip(preferenceFunctionsCoefs, configs):
-            #print(f"Model pro dimenzi:")
-            #print(preferenceFunctionCoefs)
             (interceptI, noveKoeficienty) = preferenceFunctionCoefsI
             y:List[float] = interceptI + np.dot(noveKoeficienty, np.array(getRegressors(*configI, rangeN)))
 
             pointsI:List[Point] = [Point(float(pI[0]), float(pI[1])) for pI in list(zip(rangeN, y))]
             prefFncsPoints.append(pointsI)
 
-            #plt.plot(rangeN, np.array([pI.point.y for pI in pointsWithRatingTrain]), 'b.', rangeN, y, 'r.');
-            #plt.show()
 
-        #print(f"Model pro kombinaci:")
-        #print(agregationFunctionCoefs)
-
-        lineSegmentsX:LineSegments = LineSegments.createPointToPoint(prefFncsPoints[0])
-        lineSegmentsY:LineSegments = LineSegments.createPointToPoint([Point(pI.y, pI.x) for pI in prefFncsPoints[1]])
+        lineSegmentsX:LineSegments = LineSegments.createPointToPoint(prefFncsPoints[0]).clone()
+        lineSegmentsY:LineSegments = LineSegments.createPointToPoint([Point(pI.y, pI.x) for pI in prefFncsPoints[1]]).clone()
 
         prefFncX:PrefFncX = PrefFncX.createFromLineSegments(lineSegmentsX.lineSegments)
+        prefFncX.transform(linPrefModelConf)
         prefFncY:PrefFncY = PrefFncY.createFromLineSegments(lineSegmentsY.lineSegments)
-        #prefFncX: PrefFncX = PrefFncX.createFromLineSegments([LineSegment(Point(0.0, 0.0), Point(1.0, 1.0))])
-        #prefFncY: PrefFncY = PrefFncY.createFromLineSegments([LineSegment(Point(0.1, 0.0), Point(1.0, 1.0))])
+        prefFncY.transform(linPrefModelConf)
+
         aggrFnc:AggrFnc = AggrFnc([0.5, 0.5])
 
         upModel:UserProfileModel = UserProfileModel(prefFncX, prefFncY, aggrFnc)
@@ -146,10 +140,10 @@ class LinearRegression(AMethod):
         rating:List[float] = [float(p.rating) for p in pointsWithRatingTrain]
 
         # ratingsPredicted:list<float>
-        ratingsPredicted: List[float] = individual.preferenceOfPointsInDC(points, linPrefModelConf)
+        ratingsPredicted:List[float] = individual.preferenceOfPointsInDC(points, linPrefModelConf)
 
         # fitnessRMSETrain:float
-        fitnessRMSETrain: float = fitnessFnc(ratingsPredicted, rating)
+        fitnessRMSETrain:float = fitnessFnc(ratingsPredicted, rating)
 
         return IndividualEvaluated(individual, fitnessRMSETrain)
 

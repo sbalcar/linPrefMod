@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+from typing import List
+
+from configuration.linPrefModelConfiguration import LinPrefModelConfiguration #class
+
 from generator import *
 from collections import OrderedDict
 
@@ -9,22 +13,22 @@ from geometry.lineSegments import LineSegments #class
 
 class PrefFncX:
   # points:Point[]
-  def __init__(self, points):
+  def __init__(self, points:List[Point]):
       if type(points) is not list :
           raise ValueError("Argument points isn't type list.")
       for pointI in points:
           if type(pointI) is not Point:
               raise ValueError("Argument points don't contain Point.")
-      self.lineSegments = LineSegments([LineSegment(points[i], points[i+1]) for i in range(0, len(points)-1)])
+      self.lineSegments:LineSegments = LineSegments([LineSegment(points[i].clone(), points[i+1].clone()) for i in range(0, len(points)-1)])
 
   # lineSegments:LineSegment[]
-  def createFromLineSegments(lineSegments):
+  def createFromLineSegments(lineSegments:List[LineSegment]):
       if type(lineSegments) is not list:
           raise ValueError("Argument lineSegments isn't type list.")
       for lineSegmentI in lineSegments:
           if type(lineSegmentI) is not LineSegment:
               raise ValueError("Argument lineSegmentI don't contain LineSegment.")
-      p = PrefFncX([])
+      p:PrefFncX = PrefFncX([])
       p.lineSegments = LineSegments(lineSegments)
       return p
 
@@ -86,19 +90,41 @@ class PrefFncX:
     # intersections:float[]
     return intersections;
 
+  def transform(self, linPrefModelConf:LinPrefModelConfiguration):
+
+      # moving the first and the last point on the border of cube
+      theFirstPoint:Point = self.lineSegments.lineSegments[0].point1
+      theLastPoint:Point = self.lineSegments.lineSegments[self.lineSegments.size()-1].point2
+
+      theFirstPoint.x = linPrefModelConf.AXIS_X_BEGIN_DATA_CUBE
+      theLastPoint.x = linPrefModelConf.AXIS_X_END_DATA_CUBE
+
+      minY:float = self.lineSegments.exportMinY()
+      maxY:float = self.lineSegments.exportMaxY()
+      dy:float = maxY - minY
+
+      # extend the function over the entire domain
+      lineSegmentI:LineSegment
+      for lineSegmentI in self.lineSegments.lineSegments:
+          p1:Point = lineSegmentI.point1
+          p1.y = (p1.y - minY) * linPrefModelConf.AXIS_Y_END_PREF_CUBE / dy
+          p2:Point = lineSegmentI.point2
+          p2.y = (p2.y - minY) * linPrefModelConf.AXIS_Y_END_PREF_CUBE / dy
+
+
 
 class PrefFncY:
  # points:Point[]
-  def __init__(self, points):
+  def __init__(self, points:List[Point]):
       if type(points) is not list:
           raise ValueError("Argument points isn't type list.")
       for pointI in points:
           if type(pointI) is not Point:
               raise ValueError("Argument points don't contain Point.")
-      self.lineSegments = LineSegments([LineSegment(points[i], points[i+1]) for i in range(0, len(points)-1)])
+      self.lineSegments = LineSegments([LineSegment(points[i].clone(), points[i+1].clone()) for i in range(0, len(points)-1)])
 
   # lineSegments:LineSegment[]
-  def createFromLineSegments(lineSegments):
+  def createFromLineSegments(lineSegments:List[LineSegment]):
       if type(lineSegments) is not list:
           raise ValueError("Argument lineSegments isn't type list.")
       for lineSegmentI in lineSegments:
@@ -166,3 +192,24 @@ class PrefFncY:
     # intersections:float[]
     return intersections;
 
+
+  def transform(self, linPrefModelConf:LinPrefModelConfiguration):
+
+      # moving the first and the last point on the border of cube
+      theFirstPoint:Point = self.lineSegments.lineSegments[0].point1
+      theLastPoint:Point = self.lineSegments.lineSegments[self.lineSegments.size()-1].point2
+
+      theFirstPoint.y = linPrefModelConf.AXIS_Y_BEGIN_DATA_CUBE
+      theLastPoint.y = linPrefModelConf.AXIS_Y_END_DATA_CUBE
+
+      minX:float = self.lineSegments.exportMinX()
+      maxX:float = self.lineSegments.exportMaxX()
+      dx:float = maxX - minX
+
+      # extend the function over the entire domain
+      lineSegmentI:LineSegment
+      for lineSegmentI in self.lineSegments.lineSegments:
+          p1 = lineSegmentI.point1
+          p1.x = (p1.x - minX) * linPrefModelConf.AXIS_X_END_PREF_CUBE / dx
+          p2 = lineSegmentI.point2
+          p2.x = (p2.x - minX) * linPrefModelConf.AXIS_X_END_PREF_CUBE / dx
